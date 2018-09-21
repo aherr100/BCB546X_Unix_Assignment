@@ -81,10 +81,12 @@
 	- `tail -n +2 snp_position.txt | sort -k1,1 > snp_final.txt`
 3. Join Files 
 	- `join -1 1 -2 1 -t $'\t' snp_final.txt maize_final.txt > joined_maize.txt`
-8. Create Files for 10 chr in Increasing Order and ? as Blanks
-	- `for i in {1..10}; do (head -1 joined_maize.txt; awk '$2 ~/^'$i'$/ { print $0 }' joined_maize.txt | sort -k3,3n) > chr"$i"_in_maize.txt; done`
+8. Create file w/o multiple positions 
+	- `grep -i -v 'multiple' joined_maize.txt > joined_maize_womultiple.txt`
+9. Create Files for 10 chr in Increasing Order and ? as Blanks
+	- `for i in {1..10}; do (head -1 joined_maize_womultiple.txt; awk '$2 ~/^'$i'$/ { print $0 }' joined_maize_womultiple.txt | sort -k3,3n) > chr"$i"_in_maize.txt; done`
 9. Create Files for 10 chr in Decreasing Order and - as Blanks
-	-  `for i in {1..10}; do ( head -1 joined_maize.txt; awk '$2 ~/^'$i'$/ { print $0 }' joined_maize.txt | sort -k3,3nr | sed s/?/-/g) > chr"$i"_de_maize.txt; done`
+	- `for i in {1..10}; do ( head -1 joined_maize_womultiple.txt; awk '$2 ~/^'$i'$/ { print $0 }' joined_maize_womultiple.txt | sort -k3,3nr | sed s/?/-/g) > chr"$i"_de_maize.txt; done`
 10. Isolate SNPs with Unknown Position
 	- `awk '$3 ~/unknown|Position/ { print $0 }' joined_maize.txt > chr_unknown_maize.txt`
 11. Isolate SNPs with Multiple Positions
